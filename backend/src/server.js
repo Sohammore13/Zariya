@@ -1,28 +1,31 @@
-const express = require("express");
-const dotenv = require("dotenv");
+import express from "express";
+import dotenv from "dotenv";
+import authRoutes from "./routes/auth.route.js";
+import messageRoutes from "./routes/message.route.js";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
 
-app.get("/", (req, res) => {
-    res.send("Server is ready");
-});
+const __dirname = path.resolve();
 
-app.get("/api/auth/signup", (req, res) => {
-    res.send("Signup endpoint")
-})
+const PORT = process.env.PORT || 3000;
 
-app.get("/api/auth/login", (req, res) => {
-    res.send("Login endpoint")
-})
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes)
 
-app.get("/api/auth/logout", (req, res) => {
-    res.send("Logout endpoint")
-})
+//make ready for deployment
+
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
+    });
 
 
-
+}
 
 
 app.listen(3000, () => {
