@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend",
     "start": "npm start --prefix backend",
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Sohammore13/Zariya/issues"
   },
-  "homepage": "https://github.com/Sohammore13/Zariya#readme"
+  "homepage": "https://github.com/Sohammore13/Zariya#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
