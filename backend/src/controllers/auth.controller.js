@@ -3,12 +3,14 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
 import { sendWelcomeEmail } from "../emails/emailHandler.js";
 import { ENV } from "../lib/env.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
     const { fullName, email, password } = req.body;
     try {
+        console.log("Signup Request Body:", req.body);
         if (!fullName || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
+            return res.status(400).json({ message: "All fields are required (Signup)" });
         }
 
         if (password.length < 6) {
@@ -28,6 +30,7 @@ export const signup = async (req, res) => {
         });
 
         if (newUser) {
+
             // Generate token here
             // generateToken(newUser._id, res);
             // await newUser.save();
@@ -48,16 +51,6 @@ export const signup = async (req, res) => {
                 console.log("Error in sending welcome email:", error.message);
             }
 
-
-
-
-
-
-
-
-
-
-
         } else {
             return res.status(400).json({ message: "Invalid user data" });
         }
@@ -71,15 +64,16 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
+        console.log("Login Request Body:", req.body);
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Invalid credentials (Login - User not found)" });
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Invalid credentials (Login - Password incorrect)" });
         }
 
         generateToken(user._id, res);
@@ -105,4 +99,28 @@ export const logout = (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        const userId = req.user._id;
+
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile pic is required" });
+        }
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic); // Assuming cloudinary is imported, wait I need to import it.
+        const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true });
+
+        res.status(200).json(updatedUser);
+
+    } catch (error) {
+        console.log("error in update profile:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+
 

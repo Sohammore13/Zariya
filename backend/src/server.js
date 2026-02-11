@@ -3,7 +3,7 @@ import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import path from "path";
-
+import cookieParser from "cookie-parser";
 import { connectDB } from "./lib/db.js";
 
 const app = express();
@@ -13,8 +13,7 @@ const __dirname = path.resolve();
 const PORT = ENV.PORT;
 
 app.use(express.json()); // req.body
-
-
+app.use(cookieParser());
 
 
 app.use("/api/auth", authRoutes);
