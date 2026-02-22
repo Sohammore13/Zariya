@@ -59,10 +59,10 @@ export const useAuthStore = create((set, get) => ({
 
   logout: async () => {
     try {
+      get().disconnectSocket(); // disconnect first, before clearing authUser
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully");
-      get().disconnectSocket();
     } catch (error) {
       toast.error("Error logging out");
       console.log("Logout error:", error);
@@ -100,5 +100,6 @@ export const useAuthStore = create((set, get) => ({
 
   disconnectSocket: () => {
     if (get().socket?.connected) get().socket.disconnect();
+    set({ socket: null, onlineUsers: [] }); // always clear socket state
   },
 }));

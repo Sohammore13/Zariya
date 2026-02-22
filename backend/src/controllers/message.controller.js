@@ -1,7 +1,7 @@
-import cloudinary from "../lib/cloudinary.js";
 import { getReceiverSocketId, io } from "../lib/socket.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -40,8 +40,9 @@ export const sendMessage = async (req, res) => {
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
 
+    // Require at least text or image
     if (!text && !image) {
-      return res.status(400).json({ message: "Text or image is required." });
+      return res.status(400).json({ message: "Message must contain text or an image." });
     }
     if (senderId.equals(receiverId)) {
       return res.status(400).json({ message: "Cannot send messages to yourself." });
@@ -51,17 +52,19 @@ export const sendMessage = async (req, res) => {
       return res.status(404).json({ message: "Receiver not found." });
     }
 
+    // Upload image to Cloudinary if provided
     let imageUrl;
     if (image) {
-      // upload base64 image to cloudinary
-      const uploadResponse = await cloudinary.uploader.upload(image);
+      const uploadResponse = await cloudinary.uploader.upload(image, {
+        folder: "zariya_chat_images",
+      });
       imageUrl = uploadResponse.secure_url;
     }
 
     const newMessage = new Message({
       senderId,
       receiverId,
-      text,
+      text: text || undefined,
       image: imageUrl,
     });
 

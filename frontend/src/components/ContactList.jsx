@@ -4,7 +4,7 @@ import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 
 function ContactList() {
-  const { getAllContacts, allContacts, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getAllContacts, allContacts, setSelectedUser, setActiveTab, isUsersLoading } = useChatStore();
   const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
@@ -18,16 +18,19 @@ function ContactList() {
       {allContacts.map((contact) => (
         <div
           key={contact._id}
-          className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
-          onClick={() => setSelectedUser(contact)}
+          className="bg-white p-3 rounded-xl cursor-pointer hover:bg-indigo-50 border border-gray-100 hover:border-indigo-100 transition-all"
+          onClick={() => {
+            setSelectedUser(contact);
+            setActiveTab("chats");
+          }}
         >
           <div className="flex items-center gap-3">
             <div className={`avatar ${onlineUsers.includes(contact._id) ? "online" : "offline"}`}>
-              <div className="size-12 rounded-full">
+              <div className="size-10 rounded-full">
                 <img src={contact.profilePic || "/avatar.png"} />
               </div>
             </div>
-            <h4 className="text-slate-200 font-medium">{contact.fullName}</h4>
+            <h4 className="text-gray-800 font-medium text-sm">{contact.fullName}</h4>
           </div>
         </div>
       ))}

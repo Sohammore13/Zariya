@@ -27,13 +27,13 @@ function ProfileHeader() {
   };
 
   return (
-    <div className="p-6 border-b border-slate-700/50">
+    <div className="p-5 border-b border-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* AVATAR */}
           <div className="avatar online">
             <button
-              className="size-14 rounded-full overflow-hidden relative group"
+              className="size-12 rounded-full overflow-hidden relative group"
               onClick={() => fileInputRef.current.click()}
             >
               <img
@@ -41,8 +41,8 @@ function ProfileHeader() {
                 alt="User image"
                 className="size-full object-cover"
               />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <span className="text-white text-xs">Change</span>
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <span className="text-white text-xs font-medium">Change</span>
               </div>
             </button>
 
@@ -57,27 +57,27 @@ function ProfileHeader() {
 
           {/* USERNAME & ONLINE TEXT */}
           <div>
-            <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
+            <h3 className="text-gray-800 font-semibold text-sm max-w-[180px] truncate">
               {authUser.fullName}
             </h3>
 
-            <p className="text-slate-400 text-xs">Online</p>
+            <p className="text-emerald-500 text-xs font-medium">● Online</p>
           </div>
         </div>
 
         {/* BUTTONS */}
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-3 items-center">
           {/* LOGOUT BTN */}
           <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100"
             onClick={logout}
           >
-            <LogOutIcon className="size-5" />
+            <LogOutIcon className="size-4" />
           </button>
 
           {/* SOUND TOGGLE BTN */}
           <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100"
             onClick={() => {
               // play click sound before toggling
               mouseClickSound.currentTime = 0; // reset to start
@@ -86,9 +86,9 @@ function ProfileHeader() {
             }}
           >
             {isSoundEnabled ? (
-              <Volume2Icon className="size-5" />
+              <Volume2Icon className="size-4" />
             ) : (
-              <VolumeOffIcon className="size-5" />
+              <VolumeOffIcon className="size-4" />
             )}
           </button>
         </div>

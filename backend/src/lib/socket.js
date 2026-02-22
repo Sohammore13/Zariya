@@ -40,6 +40,53 @@ io.on("connection", (socket) => {
     delete userSocketMap[userId];
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
+
+  // ── Voice Call Signaling ────────────────────────────────────────────────────
+
+  // Caller → Server: forward to callee
+  socket.on("call:initiate", ({ to, offer, callerName, callerPic }) => {
+    const receiverSocketId = getReceiverSocketId(to);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("call:incoming", {
+        callerId: userId,
+        callerName,
+        callerPic,
+        offer,
+      });
+    }
+  });
+
+  // Callee → Server: forward answer to caller
+  socket.on("call:accept", ({ to, answer }) => {
+    const callerSocketId = getReceiverSocketId(to);
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("call:accepted", { answer });
+    }
+  });
+
+  // Callee → Server: tell caller the call was rejected
+  socket.on("call:reject", ({ to }) => {
+    const callerSocketId = getReceiverSocketId(to);
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("call:rejected");
+    }
+  });
+
+  // Either side → Server: hang up
+  socket.on("call:end", ({ to }) => {
+    const otherSocketId = getReceiverSocketId(to);
+    if (otherSocketId) {
+      io.to(otherSocketId).emit("call:ended");
+    }
+  });
+
+  // ICE candidate relay (both directions)
+  socket.on("webrtc:ice-candidate", ({ to, candidate }) => {
+    const targetSocketId = getReceiverSocketId(to);
+    if (targetSocketId) {
+      io.to(targetSocketId).emit("webrtc:ice-candidate", { candidate });
+    }
+  });
 });
 
 export { io, app, server };
