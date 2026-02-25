@@ -43,7 +43,7 @@ function SignUpPage() {
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                       className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                      placeholder="John Doe"
+                      placeholder="Soham More"
                     />
                   </div>
                 </div>
